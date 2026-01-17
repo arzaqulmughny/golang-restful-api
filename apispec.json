@@ -10,5 +10,257 @@
             "url": "http://localhost:8080/api/v1"
         }
     ],
-    "paths": {}
+    "paths": {
+        "/categories": {
+            "get": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Get all categories",
+                "responses": {
+                    "200": {
+                        "description": "Success get all categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "nullable": false
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "nullable": true,
+                                            "items": {
+                                                "$ref": "#/components/schemas/Category"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Store category",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success store category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Category"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{categoryId}": {
+            "get": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "description": "Get single category by id",
+                "responses": {
+                    "200": {
+                        "description": "Success get category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Category"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Update specified category by id",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrUpdateCategory"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Category"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ],
+                "description": "Delete specified category",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete specified category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "nullable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "nullable": false
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            },
+            "CreateOrUpdateCategory": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerToken": {
+                "in": "header",
+                "description": "Authorization validation for Category RESTful API",
+                "type": "apiKey",
+                "name": "Authorization"
+            }
+        }
+    }
 }
