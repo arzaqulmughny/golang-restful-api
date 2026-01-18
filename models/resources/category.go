@@ -1,5 +1,6 @@
 package resources
 
 type CategoryResource struct {
-	name string
+	Id   int
+	Name string
 }
