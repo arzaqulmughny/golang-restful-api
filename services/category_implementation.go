@@ -15,6 +15,13 @@ type CategoryServiceImplementation struct {
 	DB                 *sql.DB
 }
 
+func NewCategoryService(categoryRepository repositories.CategoryRepository, DB *sql.DB) CategoryService {
+	return &CategoryServiceImplementation{
+		CategoryRepository: categoryRepository,
+		DB:                 DB,
+	}
+}
+
 func (service *CategoryServiceImplementation) Store(ctx context.Context, request requests.StoreCategoryRequest) resources.CategoryResource {
 	tx, err := service.DB.Begin()
 	helpers.PanicIfError(err)
@@ -35,16 +42,16 @@ func (service *CategoryServiceImplementation) Store(ctx context.Context, request
 	return categoryResponse
 }
 
-func (services *CategoryServiceImplementation) Update(ctx context.Context, request requests.UpdateCategoryRequest) resources.CategoryResource {
+func (services *CategoryServiceImplementation) Update(ctx context.Context, id int, request requests.UpdateCategoryRequest) resources.CategoryResource {
 	tx, err := services.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)
 
-	category, err := services.CategoryRepository.FindById(ctx, tx, request.Id)
+	category, err := services.CategoryRepository.FindById(ctx, tx, id)
 	helpers.PanicIfError(err)
 
 	category.Name = request.Name
-	category = services.CategoryRepository.Update(ctx, tx, category)
+	category = services.CategoryRepository.Update(ctx, tx, id, category)
 	categoryResponse := resources.CategoryResource{
 		Id:   category.Id,
 		Name: category.Name,
@@ -56,6 +63,7 @@ func (services *CategoryServiceImplementation) Update(ctx context.Context, reque
 func (services *CategoryServiceImplementation) Delete(ctx context.Context, id int) {
 	tx, err := services.DB.Begin()
 	helpers.PanicIfError(err)
+	defer helpers.CommitOrRollback(tx)
 
 	category, err := services.CategoryRepository.FindById(ctx, tx, id)
 	helpers.PanicIfError(err)

@@ -1,6 +1,6 @@
 package resources
 
 type CategoryResource struct {
-	Id   int
-	Name string
+	Id   int    `json:"id"`
+	Name string `json:"name"`
 }
