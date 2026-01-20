@@ -8,21 +8,28 @@ import (
 	"golang-restful-api/models/requests"
 	"golang-restful-api/models/resources"
 	"golang-restful-api/repositories"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type CategoryServiceImplementation struct {
 	CategoryRepository repositories.CategoryRepository
 	DB                 *sql.DB
+	Validate           *validator.Validate
 }
 
-func NewCategoryService(categoryRepository repositories.CategoryRepository, DB *sql.DB) CategoryService {
+func NewCategoryService(categoryRepository repositories.CategoryRepository, DB *sql.DB, validate *validator.Validate) CategoryService {
 	return &CategoryServiceImplementation{
 		CategoryRepository: categoryRepository,
 		DB:                 DB,
+		Validate:           validate,
 	}
 }
 
 func (service *CategoryServiceImplementation) Store(ctx context.Context, request requests.StoreCategoryRequest) resources.CategoryResource {
+	err := service.Validate.Struct(request)
+	helpers.PanicIfError(err)
+
 	tx, err := service.DB.Begin()
 	helpers.PanicIfError(err)
 
@@ -43,6 +50,9 @@ func (service *CategoryServiceImplementation) Store(ctx context.Context, request
 }
 
 func (services *CategoryServiceImplementation) Update(ctx context.Context, id int, request requests.UpdateCategoryRequest) resources.CategoryResource {
+	err := services.Validate.Struct(request)
+	helpers.PanicIfError(err)
+
 	tx, err := services.DB.Begin()
 	helpers.PanicIfError(err)
 	defer helpers.CommitOrRollback(tx)

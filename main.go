@@ -7,15 +7,16 @@ import (
 	"golang-restful-api/services"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
-
 	"github.com/julienschmidt/httprouter"
 )
 
 func main() {
 	db := app.NewDB()
+	validate := validator.New()
 	categoryRepository := repositories.NewCategoryRepository()
-	categoryService := services.NewCategoryService(categoryRepository, db)
+	categoryService := services.NewCategoryService(categoryRepository, db, validate)
 	categoryController := controllers.NewCategoryController(categoryService)
 
 	router := httprouter.New()

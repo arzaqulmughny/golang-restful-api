@@ -1,5 +1,5 @@
 package requests
 
 type UpdateCategoryRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" validate:"required"`
 }
