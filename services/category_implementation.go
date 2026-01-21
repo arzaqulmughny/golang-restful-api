@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	"golang-restful-api/exceptions"
 	"golang-restful-api/helpers"
 	"golang-restful-api/models/domains"
 	"golang-restful-api/models/requests"
@@ -58,7 +59,9 @@ func (services *CategoryServiceImplementation) Update(ctx context.Context, id in
 	defer helpers.CommitOrRollback(tx)
 
 	category, err := services.CategoryRepository.FindById(ctx, tx, id)
-	helpers.PanicIfError(err)
+	if err != nil {
+		panic(exceptions.NewNotFoundException(err.Error()))
+	}
 
 	category.Name = request.Name
 	category = services.CategoryRepository.Update(ctx, tx, id, category)
@@ -76,7 +79,9 @@ func (services *CategoryServiceImplementation) Delete(ctx context.Context, id in
 	defer helpers.CommitOrRollback(tx)
 
 	category, err := services.CategoryRepository.FindById(ctx, tx, id)
-	helpers.PanicIfError(err)
+	if err != nil {
+		panic(exceptions.NewNotFoundException(err.Error()))
+	}
 
 	services.CategoryRepository.Delete(ctx, tx, category)
 }
@@ -106,7 +111,9 @@ func (services *CategoryServiceImplementation) FindById(ctx context.Context, id 
 	helpers.PanicIfError(err)
 
 	category, err := services.CategoryRepository.FindById(ctx, tx, id)
-	helpers.PanicIfError(err)
+	if err != nil {
+		panic(exceptions.NewNotFoundException(err.Error()))
+	}
 
 	categoryResponse := resources.CategoryResource{
 		Id:   category.Id,
