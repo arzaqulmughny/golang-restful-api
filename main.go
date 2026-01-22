@@ -4,6 +4,7 @@ import (
 	"golang-restful-api/app"
 	"golang-restful-api/controllers"
 	"golang-restful-api/exceptions"
+	"golang-restful-api/middlewares"
 	"golang-restful-api/repositories"
 	"golang-restful-api/services"
 	"net/http"
@@ -32,7 +33,7 @@ func main() {
 
 	server := http.Server{
 		Addr:    "localhost:8080",
-		Handler: router,
+		Handler: middlewares.NewAuthMiddleware(router),
 	}
 
 	server.ListenAndServe()

@@ -36,6 +36,18 @@ func PanicHandler(writer http.ResponseWriter, request *http.Request, err interfa
 		return
 	}
 
+	if unauthorizedException, ok := err.(UnauthorizedException); ok {
+		writer.WriteHeader(http.StatusUnauthorized)
+		response := resources.WebResponse{
+			Code:   http.StatusUnauthorized,
+			Status: "UNAUTHORIZED",
+			Data:   unauthorizedException.Error,
+		}
+
+		helpers.WriteToResponseBody(writer, response)
+		return
+	}
+
 	writer.WriteHeader(http.StatusInternalServerError)
 	response = resources.WebResponse{
 		Code:   http.StatusInternalServerError,
