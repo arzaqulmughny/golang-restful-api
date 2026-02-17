@@ -30,11 +30,12 @@ func (controller *CategoryControllerImplementation) Store(writter http.ResponseW
 
 	newCategory := controller.CategoryService.Store(request.Context(), storeCategoryRequest)
 	response := resources.WebResponse{
-		Code:   200,
+		Code:   http.StatusCreated,
 		Status: "OK",
 		Data:   newCategory,
 	}
 
+	writter.WriteHeader(http.StatusCreated)
 	writter.Header().Add("Content-Type", "application/json")
 
 	encoder := json.NewEncoder(writter)
